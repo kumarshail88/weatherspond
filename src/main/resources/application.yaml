@@ -10,6 +10,7 @@ weather:
     path: "${MET_NO_API_MODE:compact}"
     scheduler_cron: "0 0 */2 * * *"
     cooldown_period: "2H"
+    user_agent: "testweatherapp.com support@testweatherapp.com"
 
 spring:
   redis:

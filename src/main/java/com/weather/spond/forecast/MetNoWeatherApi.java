@@ -1,6 +1,5 @@
 package com.weather.spond.forecast;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weather.spond.cache.CacheService;
 import com.weather.spond.cache.Location;
 import com.weather.spond.util.JsonUtil;
@@ -39,6 +38,8 @@ public class MetNoWeatherApi {
 
   private final JsonUtil jsonUtil;
 
+  private final String userAgent;
+
   public MetNoWeatherApi(
       CacheService cacheService,
       WeatherDataTransformer weatherDataTransformer,
@@ -47,21 +48,20 @@ public class MetNoWeatherApi {
       @Value("${weather.api.baseurl}") final String metNoServerBaseUrl,
       @Value("${weather.api.version}") final String metNoServerVersion,
       @Value("${weather.api.path}") final String metNoApiPath,
-      ObjectMapper objectMapper,
+      @Value("${weather.api.user_agent}") String userAgent,
       JsonUtil jsonUtil) {
     this.cacheService = cacheService;
     this.weatherDataTransformer = weatherDataTransformer;
     this.restClient = restClient;
     this.weatherTransformerQuery = weatherTransformerQuery;
     this.jsonUtil = jsonUtil;
+    this.userAgent = userAgent;
     this.weatherApiUrl = metNoServerBaseUrl + "/" + metNoServerVersion + "/" + metNoApiPath;
   }
 
   public List<WeatherRecord> retrieveFromMetNoApi(Double latitude, Double longitude)
       throws IOException, InterruptedException {
 
-    // TODO Implement a generic rest client service with builder and common request, response
-    // handling.
     URL url = prepareMetApiUrl(latitude, longitude);
     log.debug("requesting weather data from the met.no api {}", url);
     String weatherData;
@@ -98,12 +98,7 @@ public class MetNoWeatherApi {
   @NotNull
   private Response executeRequest(URL url) throws IOException {
     return restClient
-        .newCall(
-            new Builder()
-                .get()
-                .url(url)
-                .header("User-Agent", "testweatherapp.com support@testweatherapp.com")
-                .build())
+        .newCall(new Builder().get().url(url).header("User-Agent", userAgent).build())
         .execute();
   }
 

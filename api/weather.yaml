@@ -7,7 +7,7 @@ servers:
   - url: https://api.weatherspond.com/v1
     description: Test server
 paths:
-  /weather/forecast:
+  /v1/weather/forecast:
     post:
       summary: Get the weather data for the location
       description: Returns the weather data for the location

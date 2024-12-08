@@ -143,7 +143,7 @@ class WeatherApiIntegrationTest extends SpondWeatherApplicationBaseIntegrationTe
                         getWeatherApiRequestBody(), okhttp3.MediaType.parse("application/json")))
                 .url(
                     "http://localhost:8080"
-                        + "/api/weather/forecast"
+                        + "/api/v1/weather/forecast"
                         + "?lat="
                         + "60.5"
                         + "&lon="
