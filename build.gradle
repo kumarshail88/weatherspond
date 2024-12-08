@@ -29,6 +29,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.slf4j:slf4j-api'
 	implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	modules {
 		module("org.springframework.boot:spring-boot-starter-logging") {
 			replacedBy("org.springframework.boot:spring-boot-starter-log4j2",
@@ -42,7 +43,9 @@ dependencies {
 	implementation 'com.squareup.okhttp3:okhttp-urlconnection'
 	implementation 'com.squareup.okhttp3:logging-interceptor'
 	compileOnly 'org.projectlombok:lombok'
+	implementation 'net.thisptr:jackson-jq:1.1.0'
 	annotationProcessor 'org.projectlombok:lombok'
+	implementation 'io.opentelemetry:opentelemetry-api:1.6.0'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.boot:spring-boot-testcontainers'

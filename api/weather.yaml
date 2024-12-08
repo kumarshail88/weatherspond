@@ -1,34 +1,130 @@
 openapi: 3.0.3
 info:
-  title: Spond Weather API
-  description: A simple API to demonstrate a GET method in OpenAPI 3.
+  title: Weather API
+  description: API to retrieve weather data.
   version: 1.0.0
 servers:
   - url: https://api.weatherspond.com/v1
     description: Test server
 paths:
-  /hello:
-    get:
-      summary: Get a greeting message
-      description: Returns a greeting message as plain text.
-      operationId: getGreeting
+  /weather/forecast:
+    post:
+      summary: Get the weather data for the location
+      description: Returns the weather data for the location
+      operationId: getWeather
       tags:
-        - Greetings
+        - weather
+      parameters:
+        - name: lat
+          in: query
+          description: latitude
+          required: true
+          schema:
+            type: string
+        - name: lon
+          in: query
+          description: longitude
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: List of events to get weather data for
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Events'
       responses:
         '200':
-          description: A successful response with a greeting message
+          description: A successful response with weather data
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
-                example: "Hello, world!"
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventForecast'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Invalid request"
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+components:
+  schemas:
+    EventForecast:
+      type: object
+      required:
+        - id
+        - datetime
+        - air_temperature
+        - wind_speed
+      properties:
+        id:
+          type: integer
+          format: int32
+        datetime:
+          type: string
+          format: date-time
+        air_temperature:
+          type: number
+          format: float
+        wind_speed:
+          type: number
+          format: float
+    ApiError:
+      type: object
+      required:
+        - code
+        - message
+        - resource
+        - timestamp
+        - trace_id
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+        resource:
+          type: string
+        trace_id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    Events:
+      type: object
+      required:
+        - events
+      properties:
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+    Event:
+      type: object
+      required:
+        - id
+        - start
+        - end
+      properties:
+        id:
+          type: integer
+          format: int32
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+
+
+
+

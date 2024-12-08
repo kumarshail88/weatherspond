@@ -1,2 +1,21 @@
 server:
   port: 8080
+  servlet:
+    context-path: /api
+
+weather:
+  api:
+    baseurl: "${MET_NO_BASE_URL:https://api.met.no/weatherapi/locationforecast}"
+    version: "${MET_NO_API_VERSION:2.0}"
+    path: "${MET_NO_API_MODE:compact}"
+    scheduler_cron: "0 0 */2 * * *"
+    cooldown_period: "2H"
+
+spring:
+  redis:
+    host: "${REDIS_HOST:127.0.0.1}"
+    port: "${REDIS_PORT:6379}"
+    ttl: "${REDIS_TTL:7200000}"
+
+queries:
+  weather_transformer_query: ".properties.timeseries | map({dateTime: .time, airTemperature: .data.instant.details.air_temperature, windSpeed: .data.instant.details.wind_speed})"

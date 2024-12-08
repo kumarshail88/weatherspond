@@ -16,22 +16,21 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @ActiveProfiles("test")
 @Testcontainers
 @DirtiesContext
-class SpondWeatherApplicationBaseIntegrationTests {
+public class SpondWeatherApplicationBaseIntegrationTests {
 
-  static final WireMockServer mockWeatherServer = startWireMockServer();
+  public static final WireMockServer mockWeatherServer = startWireMockServer();
 
   public static ComposeContainer environment = getComposeContainer();
 
   @DynamicPropertySource
   static void dataSourceProperties(DynamicPropertyRegistry registry) {
-    registry.add("MET_NO_SERVER_URL", mockWeatherServer::baseUrl);
+    registry.add("MET_NO_BASE_URL", mockWeatherServer::baseUrl);
   }
 
   private static ComposeContainer getComposeContainer() {
     ComposeContainer composeContainer =
         new ComposeContainer(new File("docker-compose/compose-test.yaml"))
-            .withExposedService("redis-1", 6379)
-            .withExposedService("caddy-1", 8081);
+            .withExposedService("redis-1", 6379);
 
     composeContainer.start();
     return composeContainer;

@@ -1,0 +1,11 @@
+logging:
+  config: "classpath:log4j2-spring-local.xml"
+
+weather:
+  api:
+    scheduler_cron: "*/2 * * * * *"
+    cooldown_period: "0S"
+
+spring:
+  redis:
+    ttl: "${REDIS_TTL:10000}"

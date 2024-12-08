@@ -1,13 +1,4 @@
 services:
-  caddy:
-    image: caddy:2.8.0-alpine
-    volumes:
-      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
-    restart: unless-stopped
-    ports:
-      - 8081:8081
-    networks:
-      - local
   redis:
     image: redis
     restart: unless-stopped
