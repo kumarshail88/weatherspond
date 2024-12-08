@@ -34,6 +34,16 @@ docker compose -f ./docker-compose/compose.yaml up --build --force-recreate -d
 ```shell
 ./gradlew bootRun --args='--spring.profiles.active=local'
 ```
+!!NOTE: The service has platform dependency over jq. Please ensure that jq is installed on your system. If not then use the docker-compose method to run the service.
+jq can be installed using the following command on macOS:  
+```shell
+brew install jq
+```
+On linux:  
+```shell
+sudo apt-get install jq -y
+```
+
 The local server is reachable at `http://localhost:8080/api/v1`  
 Weather api is reachable at `http://localhost:8080/api/v1/weather/forecast  
 Example curl request:  
