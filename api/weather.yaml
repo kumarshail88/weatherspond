@@ -1,0 +1,34 @@
+openapi: 3.0.3
+info:
+  title: Spond Weather API
+  description: A simple API to demonstrate a GET method in OpenAPI 3.
+  version: 1.0.0
+servers:
+  - url: https://api.weatherspond.com/v1
+    description: Test server
+paths:
+  /hello:
+    get:
+      summary: Get a greeting message
+      description: Returns a greeting message as plain text.
+      operationId: getGreeting
+      tags:
+        - Greetings
+      responses:
+        '200':
+          description: A successful response with a greeting message
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Hello, world!"
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid request"

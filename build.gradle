@@ -1,0 +1,94 @@
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+
+plugins {
+	id 'java'
+	id 'org.springframework.boot'
+	id 'io.spring.dependency-management'
+	id 'com.github.ben-manes.versions'
+	id 'org.openapi.generator'
+	id 'com.diffplug.spotless'
+	id 'com.gorylenko.gradle-git-properties'
+}
+
+group = 'com.test'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'me.paulschwarz:spring-dotenv:4.0.0'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.slf4j:slf4j-api'
+	implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+	modules {
+		module("org.springframework.boot:spring-boot-starter-logging") {
+			replacedBy("org.springframework.boot:spring-boot-starter-log4j2",
+					"Exclude default logback and user log4j")
+		}
+	}
+	implementation 'io.swagger.core.v3:swagger-annotations:2.2.25'
+	implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
+	implementation 'jakarta.validation:jakarta.validation-api'
+	implementation 'com.squareup.okhttp3:okhttp'
+	implementation 'com.squareup.okhttp3:okhttp-urlconnection'
+	implementation 'com.squareup.okhttp3:logging-interceptor'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+	testImplementation 'org.wiremock:wiremock-standalone:3.10.0'
+	testImplementation 'org.testcontainers:junit-jupiter'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+gitProperties {
+	keys = ['git.commit.id']
+}
+
+def generateApiTask = tasks.register("generateApi", GenerateTask) {
+	generatorName.set("spring")
+	inputSpec.set("$rootDir/api/weather.yaml")
+	outputDir = layout.buildDirectory.dir("generated/openapi/weather").get().asFile.path
+	apiPackage.set("com.weatherspond.api")
+	modelPackage.set("com.weatherspond.api")
+	ignoreFileOverride = "$projectDir/.openapi-generator-ignore"
+	configOptions.set([
+	        "interfaceOnly"			: "true",
+			"useTags"				: "true",
+			"skipDefaultInterface"	: "true",
+			"useSpringBoot3"		: "true",
+			"cleanOutput"			: "true"
+	])
+}
+
+sourceSets {
+	main {
+		java {
+			srcDir("$buildDir/generated/openapi/weather/src/main/java")
+		}
+	}
+}
+
+compileJava.dependsOn generateApiTask
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+spotless {
+	java {
+		target "src/**/*.java"
+		removeUnusedImports()
+		googleJavaFormat('1.19.2')
+	}
+}

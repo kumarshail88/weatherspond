@@ -1,0 +1,5 @@
+**/pom.xml
+**/README.md
+**/ApiUtil.java
+**/.openapi-generator/*
+**/.openapi-generator-ignore

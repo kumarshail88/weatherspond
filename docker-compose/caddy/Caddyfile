@@ -1,0 +1,9 @@
+{
+  debug
+}
+
+http://localhost:8081 {
+  handle_path /test/* {
+    reverse_proxy http://weatherspond:8080
+  }
+}

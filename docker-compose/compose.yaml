@@ -1,0 +1,34 @@
+services:
+  template:
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    container_name: template-service
+    depends_on:
+      - postgres
+      - caddy
+    networks:
+      - local
+  caddy:
+    image: caddy:2.8.0-alpine
+    container_name: caddy
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - 8081:8081
+    networks:
+      - local
+  redis:
+    image: redis
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+
+networks:
+  local:
+    driver: bridge
+    name: local
