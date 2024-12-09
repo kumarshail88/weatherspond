@@ -1,6 +1,21 @@
 # Weatherspond service
 Spond's weather service that serves the weather data for the Spond listed events.   
 
+# About the solution
+The service primarily relies on redis cache data to process the weather forecast for the upcoming events.   
+The redis cache is populated by a scheduler, fetching the data from met.no api every 2 hours. The scheduler uses a location registry to keep track of which locations it has to fetch the weather data for.  
+The location registry is a simple in memory LRU cache with fixed size of 100. This is to prevent the scheduler 
+from being overloaded or overusing the met.no api. The location registry also keeps track of the last updated timestamp for every location. 
+
+Ideally the location registry and the scheduler should be separate components outside this service.  
+Since there is no outside component or trigger that updates newly created events in the location registry, therefore for the current solution to work  
+at least locally, the weather api itself updates the location registry and forces the fetch of weather data
+from met.no api for new locations and update the cache. Subsequent queries for an existing event is done through the cache itself.   
+
+The processing and transformation of the met.no api json data is done with the help jq. The jq query is configurable.
+Because of the use of jq, this solution has platform dependency since jq must be pre-installed for this service to function locally.  
+The use of jq may not be the most secure and efficient way of processing json data. 
+
 ## Tech stack
 1. **Springboot**
 2. **Java 17**
